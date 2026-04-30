@@ -1,4 +1,4 @@
-# 🏦 Hscoo Bank Management System
+# 🏦 Hussam Bank Management System
 
 A simple and interactive console-based Bank Management System built with Python. It allows users to manage bank clients, perform basic operations, and query the client list.
 
