@@ -26,7 +26,13 @@ class Client:
 
 def new_client():
     c_name = input('Enter the name: ')
-    c_phone = input('Enter the phone number: ')
+    while True:
+        try:
+            c_phone = int(input('Enter the phone number: '))
+            break
+        except ValueError:
+            print('Please enter a valid number.')
+        
     while True:
         try:
             c_money = int(input('Enter the money: '))
@@ -85,7 +91,7 @@ clients = []
 while True:
     clear_screen()
     print('''
-| Welcome to Hscoo Bank |
+| Welcome to Hussam Bank |
 
 Choose an action:
 
@@ -107,13 +113,13 @@ Choose an action:
         if clients:
             time.sleep(1)
             clear_screen()
-            print('Displaying all clients:\n')
+            print('Displaying all clients...\n')
             
             for c in clients:
                 time.sleep(3)
                 c.print_info()
             print('\nDisplaying is finished.')
-            time.sleep(8)
+            exit = input('Press enter to continue...')
         
         else:
             print('\nSorry, There is no clients to display!')
