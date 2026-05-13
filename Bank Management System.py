@@ -1,7 +1,7 @@
-import random
-import string
 import os
 import time
+import random
+import string
 
 def clear_screen():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -9,132 +9,105 @@ def clear_screen():
 numbers = string.digits
 
 class Client:
-    def __init__(self, c_name, c_phone, c_money, account_ID, c_status):
+    def __init__(self, c_name, c_phone, c_money):
         self.c_name = c_name
         self.c_phone = c_phone
         self.c_money = c_money
-        self.account_ID = account_ID
-        self.c_status = c_status
-    
+        self.account_ID = ''.join(random.choices(numbers, k=5))
+
+        self.c_status = 'Important client' if c_money >= 1000000 else 'Normal client'
+
     def print_info(self):
-        print(f'Client name: {self.c_name}')
-        print(f'Client phone number: {self.c_phone}')
-        print(f'Client money: {self.c_money}')
-        print(f'Client ID: {self.account_ID}')
-        print(f'Client status: {self.c_status}')
-        print('_' * 20)
+        print(f"[{self.account_ID}] Name: {self.c_name}")
+        print(f"      Phone: {self.c_phone}")
+        print(f"      Balance: ${self.c_money:,.2f}")
+        print(f"      Status: {self.c_status}")
+        print("-" * 35)
 
-def new_client():
-    c_name = input('Enter the name: ')
-    while True:
-        try:
-            c_phone = int(input('Enter the phone number: '))
-            break
-        except ValueError:
-            print('Please enter a valid number.')
+class HussamBank:
+    def __init__(self):
+        self.clients = []
+
+    def add_new_client(self):
+        clear_screen()
+        print("--- Registration Form ---")
+        c_name = input("Enter client full name: ").strip().capitalize()
         
-    while True:
-        try:
-            c_money = int(input('Enter the money: '))
-            break
-        except ValueError:
-            print('Please enter a valid number.')
-    account_ID = ''.join(random.choices(numbers, k = 4))
-
-    if c_money < 1000000:
-        c_status = 'Normal client'
-    else:
-        c_status = 'Important client'
-
-    return Client(c_name, c_phone, c_money, account_ID, c_status)
-
-def search(clients):
-    if not clients:
-        print('\nSorry, There is no client to search!')
-        time.sleep(3)
-        return
-    
-    print('\n--- Search Menu ---')
-    search_choice = input('Search by (1) Account ID or (2) Name: ').strip()
-    
-    found = False
-    
-    if search_choice == '1':
-        search_id = input('Enter Account ID: ').strip()
-        for c in clients:
-            if c.account_ID == search_id:
-                print('\nClient Found:\n')
-                c.print_info()
-                found = True
+        while True:
+            c_phone = input("Enter phone number: ").strip()
+            if c_phone.isdigit() and len(c_phone) >= 8:
                 break
-                
-    elif search_choice == '2':
-        search_name = input('Enter Client Name: ').strip().lower()
-        for c in clients:
-            if search_name in c.c_name.lower():
-                print('\nClient Found:\n')
-                c.print_info()
-                found = True
-                
-    else:
-        print('\nInvalid choice!')
-        time.sleep(2)
-        return
+            print("Error: Please enter a valid phone number (digits only).")
 
-    if not found:
-        print('\nNo client matches your criteria.')
-    
-    time.sleep(5)
+        while True:
+            try:
+                c_money = float(input("Enter initial deposit amount: "))
+                if c_money < 0:
+                    print("Error: Money cannot be negative.")
+                    continue
+                break
+            except ValueError:
+                print("Error: Please enter a valid numeric amount.")
 
-clients = []
+        new_obj = Client(c_name, c_phone, c_money)
+        self.clients.append(new_obj)
+        print(f"\nDone! Client assigned ID: {new_obj.account_ID}")
+        input("Press enter to continue")
 
-while True:
-    clear_screen()
-    print('''
-| Welcome to Hussam Bank |
-
-Choose an action:
-
-1. Add a new client
-2. Display all clients
-3. Search for client
-4. Exit''')
-    
-    choice = input('\nEnter your choice: ')
-
-    if choice == '1':
-        time.sleep(1)
+    def display_all(self):
         clear_screen()
-        clients.append(new_client())
-        print('\nClient added successfully!')
-        time.sleep(2)
-
-    elif choice == '2':
-        if clients:
-            time.sleep(1)
-            clear_screen()
-            print('Displaying all clients...\n')
-            
-            for c in clients:
-                time.sleep(3)
-                c.print_info()
-            print('\nDisplaying is finished.')
-            exit = input('Press enter to continue...')
-        
+        if not self.clients:
+            print("The bank database is currently empty.")
         else:
-            print('\nSorry, There is no clients to display!')
-            time.sleep(3)
+            print(f"Total Clients: {len(self.clients)}\n" + "="*35)
+            for c in self.clients:
+                c.print_info()
+        input("\nPress Enter to go back...")
 
-    elif choice == '3':
-        time.sleep(1)
+    def search_for_client(self):
         clear_screen()
-        search(clients)
+        if not self.clients:
+            print("No data available to search.")
+            time.sleep(2)
+            return
 
-    elif choice == '4':
-        print('\nExiting...')
-        time.sleep(2)
-        break 
-    
-    else:
-        print('\nError, Please choose from the options!')
-        time.sleep(2)
+        query = input("Search by Name or Account ID: ").lower()
+        results = [c for c in self.clients if query in c.c_name.lower() or query == c.account_ID]
+        
+        print("\n--- Search Results ---")
+        if results:
+            for c in results:
+                c.print_info()
+        else:
+            print("No matches found.")
+        input("\nPress Enter to continue...")
+
+    def run(self):
+        while True:
+            clear_screen()
+            print("      HUSSAM CENTRAL BANK      ")
+            print("===============================")
+            print("1) Open New Account")
+            print("2) Directory (All Clients)")
+            print("3) Search Database")
+            print("4) Terminate System")
+            print("===============================")
+            
+            choice = input("Select Option: ")
+
+            if choice == '1':
+                self.add_new_client()
+            elif choice == '2':
+                self.display_all()
+            elif choice == '3':
+                self.search_for_client()
+            elif choice == '4':
+                print("\nSystem shutting down... Goodbye!")
+                break
+            else:
+                print("\nInvalid command!")
+                time.sleep(1)
+
+if __name__ == "__main__":
+    bank_system = HussamBank()
+    bank_system.run()
