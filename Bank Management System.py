@@ -52,7 +52,7 @@ class HussamBank:
         new_obj = Client(c_name, c_phone, c_money)
         self.clients.append(new_obj)
         print(f"\nDone! Client assigned ID: {new_obj.account_ID}")
-        input("Press enter to continue")
+        input("Press enter to continue...")
 
     def display_all(self):
         clear_screen()
@@ -64,24 +64,22 @@ class HussamBank:
                 c.print_info()
         input("\nPress Enter to go back...")
 
-    def search_for_client(self):
-        clear_screen()
-        if not self.clients:
-            print("No data available to search.")
-            time.sleep(2)
-            return
-
-        query = input("Search by Name or Account ID: ").lower()
-        results = [c for c in self.clients if query in c.c_name.lower() or query == c.account_ID]
-        
-        print("\n--- Search Results ---")
-        if results:
-            for c in results:
-                c.print_info()
-        else:
-            print("No matches found.")
-        input("\nPress Enter to continue...")
-
+    while True:
+            query = input("Search by Name or Account ID: ").lower()
+            if query:
+                results = [c for c in self.clients if query in c.c_name.lower() or query == c.account_ID]
+                
+                print("\n--- Search Results ---")
+                if results:
+                    for c in results:
+                        c.print_info()
+                else:
+                    print("No matches found.")
+                input("\nPress Enter to continue...")
+                break
+            else:
+                print("Please enter a name or an account ID")
+    
     def run(self):
         while True:
             clear_screen()
